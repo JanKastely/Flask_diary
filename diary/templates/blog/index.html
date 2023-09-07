@@ -1,0 +1,42 @@
+
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Posts{% endblock %}</h1>
+  {% if g.user %}
+    <a class="action" href="{{ url_for('blog.create') }}">
+        <img src="/static/new_post.png" alt="New">
+    </a>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  {% for post in posts %}
+    <article class="post">
+      <header>
+        <div>
+          <h1>{{ post['title'] }}</h1>
+          <div class="about">by {{ post['username'] }} on {{ post['created'].strftime('%Y-%m-%d') }}</div>
+        </div>
+        {% if g.user['id'] == post['author_id'] %}
+          <a class="action" href="{{ url_for('blog.update', id=post['id']) }}">
+            <img src="/static/edit_post.png" width="20px" alt="Edit"></a>
+        {% endif %}
+
+      </header>
+      <p class="body">{{ post['body'] }}</p>
+
+
+      <!-- Nahrazení tlačítka "LIKE" obrázkem palce nahoru -->
+      <img class="like-button" src="/static/thumbs_up.png" data-post-id="{{ post['id'] }}" alt="Like">
+
+      <!-- Element pro zobrazení aktuálního počtu "likes" -->
+      <span> <span id="like-count-{{ post['id'] }}">{{ post['likes'] }}</span></span>
+
+    </article>
+    {% if not loop.last %}
+      <hr>
+    {% endif %}
+  {% endfor %}
+{% endblock %}
+
